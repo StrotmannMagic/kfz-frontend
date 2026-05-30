@@ -3,15 +3,28 @@ import Field from '../components/Field';
 export default function StepSchaden({ data, onChange, images, setImages, onNext, onPrev }) {
   const canNext = data.beschreibung;
 
-  const handleFiles = (e) => {
-    const files = Array.from(e.target.files);
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        setImages(prev => [...prev, { name: file.name, dataUrl: ev.target.result }]);
+  const compressImage = (file) => new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX = 1200;
+        const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve({ name: file.name, dataUrl: canvas.toDataURL('image/jpeg', 0.8) });
       };
-      reader.readAsDataURL(file);
-    });
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  const handleFiles = async (e) => {
+    const files = Array.from(e.target.files);
+    const compressed = await Promise.all(files.map(compressImage));
+    setImages(prev => [...prev, ...compressed]);
     e.target.value = '';
   };
 

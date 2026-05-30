@@ -1,6 +1,8 @@
 import Field from '../components/Field';
 
-export default function StepPersonal({ data, onChange, onNext }) {
+export default function StepPersonal({ data, onChange, onNext, onPrev, t }) {
+  const s = t.personal;
+
   const f = (field) => ({
     value: data[field],
     onChange: e => onChange({ [field]: e.target.value }),
@@ -11,36 +13,36 @@ export default function StepPersonal({ data, onChange, onNext }) {
 
   return (
     <div>
-      <h2 className="step-title">👤 Persönliche Daten</h2>
-      <p className="step-subtitle">Ihre Kontaktdaten für die Schadensbearbeitung</p>
+      <h2 className="step-title">{s.title}</h2>
+      <p className="step-subtitle">{s.subtitle}</p>
 
       <div className="form-grid">
-        <Field label="Vorname" required>
+        <Field label={s.vorname} required>
           <input type="text" placeholder="Max" {...f('vorname')} />
         </Field>
-        <Field label="Nachname" required>
+        <Field label={s.nachname} required>
           <input type="text" placeholder="Mustermann" {...f('nachname')} />
         </Field>
-        <Field label="E-Mail-Adresse" required>
-          <input type="email" placeholder="max@example.de" {...f('email')} />
+        <Field label={s.email} required>
+          <input type="email" placeholder="name@example.com" {...f('email')} />
         </Field>
-        <Field label="Telefonnummer" required>
-          <input type="tel" placeholder="+49 170 1234567" {...f('telefon')} />
+        <Field label={s.telefon} required>
+          <input type="tel" placeholder="+34 600 000 000" {...f('telefon')} />
         </Field>
-        <Field label="Straße und Hausnummer" required full>
+        <Field label={s.strasse} required full>
           <input type="text" placeholder="Musterstraße 12" {...f('strasse')} />
         </Field>
-        <Field label="PLZ" required>
-          <input type="text" placeholder="12345" {...f('plz')} maxLength={5} />
+        <Field label={s.plz} required>
+          <input type="text" placeholder="28001" {...f('plz')} />
         </Field>
-        <Field label="Ort" required>
-          <input type="text" placeholder="Berlin" {...f('ort')} />
+        <Field label={s.ort} required>
+          <input type="text" placeholder="Madrid" {...f('ort')} />
         </Field>
       </div>
 
       <div className="step-nav-buttons">
         <button className="btn btn-primary" onClick={onNext} disabled={!canNext}>
-          Weiter →
+          {t.nav.next}
         </button>
       </div>
     </div>
